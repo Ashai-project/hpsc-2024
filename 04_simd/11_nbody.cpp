@@ -35,9 +35,9 @@ int main()
     // }
     __m512 rxvec = _mm512_sub_ps(_mm512_set1_ps(x[i]), xvec);
     __m512 ryvec = _mm512_sub_ps(_mm512_set1_ps(y[i]), yvec);
-    __m512 rvec = _mm512_rsqrt14_ps(_mm512_add_ps(_mm512_sub_ps(rxvec, rxvec), _mm512_sub_ps(ryvec, ryvec)));
-    // __mmask16 mask = ~(1 << i);
-    // rvec = _mm512_mask_blend_ps(mask, _mm512_set1_ps(0), rvec);
+    __m512 rvec = _mm512_rsqrt14_ps(_mm512_add_ps(_mm512_mul_ps(rxvec, rxvec), _mm512_mul_ps(ryvec, ryvec)));
+    __mmask16 mask = ~(1 << i);
+    rvec = _mm512_mask_blend_ps(mask, _mm512_set1_ps(0), rvec);
     fx[i] -= _mm512_reduce_add_ps(_mm512_mul_ps(rxvec, _mm512_mul_ps(mvec, _mm512_mul_ps(rvec, _mm512_mul_ps(rvec, rvec)))));
     fy[i] -= _mm512_reduce_add_ps(_mm512_mul_ps(ryvec, _mm512_mul_ps(mvec, _mm512_mul_ps(rvec, _mm512_mul_ps(rvec, rvec)))));
     printf("%d %g %g\n", i, fx[i], fy[i]);
